@@ -1,0 +1,24 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ParkingSlot {
+  id          String        @id @default(uuid())
+  type        String        // "A" or "F"
+  isAvailable Boolean       @default(true)
+  Reservation Reservation[]
+}
+
+model Reservation {
+  id      String      @id @default(uuid())
+  slotId  String
+  userId  String
+  date    DateTime
+  slot    ParkingSlot @relation(fields: [slotId], references: [id])
+}
