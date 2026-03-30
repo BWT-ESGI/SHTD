@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15-alpine
@@ -22,6 +20,33 @@ services:
     volumes:
       - redis_data:/data
     restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: parking_backend
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://parking_user:parking_password@db:5432/parking_reservation?schema=public"
+      REDIS_URL: "redis://cache:6379"
+      PORT: 3000
+    depends_on:
+      - db
+      - cache
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: parking_frontend
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_URL: "http://localhost:3000/api"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

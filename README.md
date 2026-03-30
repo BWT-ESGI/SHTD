@@ -1,12 +1,9 @@
 # Parking Reservation System
 
-Ce projet est un système de réservation de parking développé en appliquant l'Architecture Hexagonale.
+Ce projet est un système de réservation de parking automatisé, développé en interne pour une société. Cette appliation sera utilisé par des non-initiés à l'informatique.
 
-## Itération 1 :
 
-L'objectif de cette itération est de mettre en place les fondations du projet sans coder de fonctionnalités métier : structure de dossiers, documentation (ADR, diagrammes C4) et automatisation de base.
-
-### Architecture Documentation
+### Documentation
 
 - [Architecture Diagram (C4)](docs/architecture.md)
 - [ADRs - Architecture Decision Records](docs/adr/)
@@ -22,6 +19,13 @@ L'objectif de cette itération est de mettre en place les fondations du projet s
 Des scripts d'automatisation se trouvent dans le dossier `scripts/` :
 
 ```bash
+cd backend
+
+cp .env.example .env
+# modifier les variables d'environnement
+
+cd ..
+
 # Pour builder le projet (simulation)
 ./scripts/build.sh
 
