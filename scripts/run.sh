@@ -11,6 +11,29 @@ echo "Running prisma migrations in backend..."
 sleep 5
 docker exec parking_backend npx prisma db push
 
+echo "Seeding test users..."
+docker exec parking_backend node -e "
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
+prisma.user.upsert({
+  where: { id: 'employee123' },
+  update: { hasElectricVehicle: false },
+  create: { id: 'employee123', hasElectricVehicle: false }
+}).then(() => console.log('User employee123 (Standard) seeded')).catch(console.error);
+
+prisma.user.upsert({
+  where: { id: 'employee456' },
+  update: { hasElectricVehicle: false },
+  create: { id: 'employee456', hasElectricVehicle: false }
+}).then(() => console.log('User employee456 (Standard) seeded')).catch(console.error);
+
+prisma.user.upsert({
+  where: { id: 'employee789' },
+  update: { hasElectricVehicle: true },
+  create: { id: 'employee789', hasElectricVehicle: true }
+}).then(() => console.log('User employee789 (Electric) seeded')).catch(console.error);
+"
+
 docker exec parking_backend node -e "
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -77,7 +100,7 @@ prisma.parkingSlot.createMany({
     { id: 'F09', type: 'F', isAvailable: true },
     { id: 'F10', type: 'F', isAvailable: true }
   ]
-}).then(() => console.log('Database seeded with slots A01, A03, F01, B02, C05')).catch(console.error);
+}).then(() => console.log('Database seeded')).catch(console.error);
 "
 
 echo "Access the app at http://localhost:5173"
