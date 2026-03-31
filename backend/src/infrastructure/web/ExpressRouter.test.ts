@@ -2,8 +2,11 @@ import request from 'supertest';
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { PrismaReservationRepository } from '../database/PrismaReservationRepository';
+import { PrismaUserRepository } from '../database/PrismaUserRepository';
 import { BullMessageQueue } from '../queue/BullMessageQueue';
 import { CreateReservation } from '../../core/use-cases/CreateReservation';
+import { CheckInReservation } from '../../core/use-cases/CheckInReservation';
+import { ReleaseExpiredReservations } from '../../core/use-cases/ReleaseExpiredReservations';
 import { createExpressRouter } from './ExpressRouter';
 
 // To keep the test simple without requiring a real external Redis:
@@ -16,12 +19,15 @@ describe('Integration Test: API -> Use Case -> DB', () => {
   beforeAll(() => {
     prisma = new PrismaClient();
     const repository = new PrismaReservationRepository(prisma);
+    const userRepository = new PrismaUserRepository(prisma);
     const messageQueue = new BullMessageQueue('test-queue', 'redis://localhost:6379');
-    const createReservation = new CreateReservation(repository, messageQueue);
+    const createReservation = new CreateReservation(repository, userRepository, messageQueue);
+    const checkInReservation = new CheckInReservation(repository);
+    const releaseExpiredReservations = new ReleaseExpiredReservations(repository);
     
     app = express();
     app.use(express.json());
-    app.use('/api', createExpressRouter(createReservation, repository));
+    app.use('/api', createExpressRouter(createReservation, checkInReservation, releaseExpiredReservations, repository));
   });
 
   afterAll(async () => {

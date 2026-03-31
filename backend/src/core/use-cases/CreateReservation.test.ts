@@ -4,8 +4,12 @@ import { MessageQueue } from '../ports/MessageQueue';
 import { ParkingSlot } from '../domain/ParkingSlot';
 import { Reservation } from '../domain/Reservation';
 
+import { UserRepository } from '../ports/UserRepository';
+import { User } from '../domain/User';
+
 describe('CreateReservation Use Case', () => {
   let mockRepository: jest.Mocked<ReservationRepository>;
+  let mockUserRepository: jest.Mocked<UserRepository>;
   let mockQueue: jest.Mocked<MessageQueue>;
   let useCase: CreateReservation;
 
@@ -15,18 +19,29 @@ describe('CreateReservation Use Case', () => {
       findById: jest.fn(),
       saveReservation: jest.fn(),
       updateSlot: jest.fn(),
+      getReservationById: jest.fn(),
+      updateReservation: jest.fn(),
+      getUserReservations: jest.fn(),
+      findAllActiveReservations: jest.fn(),
+      hasActiveReservation: jest.fn(),
+    } as any;
+
+    mockUserRepository = {
+      findById: jest.fn(),
+      save: jest.fn(),
     };
 
     mockQueue = {
       publish: jest.fn(),
     };
 
-    useCase = new CreateReservation(mockRepository, mockQueue);
+    useCase = new CreateReservation(mockRepository, mockUserRepository, mockQueue);
   });
 
   it('should create a reservation successfully', async () => {
     const slot = new ParkingSlot('slot-1', 'A', true);
     mockRepository.findById.mockResolvedValue(slot);
+    (mockRepository.hasActiveReservation as jest.Mock).mockResolvedValue(false);
 
     const reservation = await useCase.execute('slot-1', 'user-1', new Date(), 'A');
 
@@ -56,5 +71,23 @@ describe('CreateReservation Use Case', () => {
     mockRepository.findById.mockResolvedValue(slot);
 
     await expect(useCase.execute('slot-1', 'user-1', new Date(), 'A')).rejects.toThrow('Slot is not of the required type: A.');
+  });
+
+  it('should fail if electric slot is reserved by non-electric user', async () => {
+    const slot = new ParkingSlot('slot-1', 'F', true);
+    mockRepository.findById.mockResolvedValue(slot);
+    mockUserRepository.findById.mockResolvedValue(new User('user-1', false));
+
+    await expect(useCase.execute('slot-1', 'user-1', new Date())).rejects.toThrow('Electric slots (Type F) are reserved for electric vehicles only.');
+  });
+
+  it('should succeed if electric slot is reserved by electric user', async () => {
+    const slot = new ParkingSlot('slot-1', 'F', true);
+    mockRepository.findById.mockResolvedValue(slot);
+    mockUserRepository.findById.mockResolvedValue(new User('user-1', true));
+    (mockRepository.hasActiveReservation as jest.Mock).mockResolvedValue(false);
+
+    const reservation = await useCase.execute('slot-1', 'user-1', new Date());
+    expect(reservation).toBeDefined();
   });
 });
