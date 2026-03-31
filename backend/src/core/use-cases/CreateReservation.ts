@@ -9,7 +9,7 @@ export class CreateReservation {
     private readonly reservationRepository: ReservationRepository,
     private readonly userRepository: UserRepository,
     private readonly messageQueue: MessageQueue
-  ) {}
+  ) { }
 
   public async execute(
     slotId: string,
@@ -18,7 +18,7 @@ export class CreateReservation {
     requiredType?: SlotType
   ): Promise<Reservation> {
     const slot = await this.reservationRepository.findById(slotId);
-    
+
     if (!slot) {
       throw new Error('Slot not found.');
     }
@@ -27,16 +27,15 @@ export class CreateReservation {
       throw new Error('Slot is not available.');
     }
 
-    // New restriction: Electric vehicles only for 'F' slots
-    if (slot.type === 'F') {
-      const user = await this.userRepository.findById(userId);
-      if (!user || !user.hasElectricVehicle) {
-        throw new Error('Electric slots (Type F) are reserved for electric vehicles only.');
-      }
-    }
-
     if (requiredType && slot.type !== requiredType) {
       throw new Error(`Slot is not of the required type: ${requiredType}.`);
+    }
+
+    if (slot.type === 'F' || slot.type === 'A') {
+      const user = await this.userRepository.findById(userId);
+      if (!user || !user.hasElectricVehicle) {
+        throw new Error(`Electric slots are reserved for electric vehicles only.`);
+      }
     }
 
     const hasActive = await this.reservationRepository.hasActiveReservation(

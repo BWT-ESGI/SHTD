@@ -41,6 +41,7 @@ describe('CreateReservation Use Case', () => {
   it('should create a reservation successfully', async () => {
     const slot = new ParkingSlot('slot-1', 'A', true);
     mockRepository.findById.mockResolvedValue(slot);
+    mockUserRepository.findById.mockResolvedValue(new User('user-1', true));
     (mockRepository.hasActiveReservation as jest.Mock).mockResolvedValue(false);
 
     const reservation = await useCase.execute('slot-1', 'user-1', new Date(), 'A');
