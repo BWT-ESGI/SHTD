@@ -6,4 +6,10 @@ export interface ReservationRepository {
   findById(slotId: string): Promise<ParkingSlot | null>;
   saveReservation(reservation: Reservation): Promise<void>;
   updateSlot(slot: ParkingSlot): Promise<void>;
+  
+  getReservationById(id: string): Promise<Reservation | null>;
+  updateReservation(reservation: Reservation): Promise<void>;
+  getUserReservations(userId: string): Promise<Reservation[]>;
+  findAllActiveReservations(date: Date): Promise<Reservation[]>;
+  hasActiveReservation(userId: string, date: Date): Promise<boolean>;
 }

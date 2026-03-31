@@ -48,4 +48,97 @@ export class PrismaReservationRepository implements ReservationRepository {
       },
     });
   }
+
+  public async getReservationById(id: string): Promise<Reservation | null> {
+    const res = await this.prisma.reservation.findUnique({
+      where: { id },
+    });
+
+    if (!res) return null;
+
+    return new Reservation(
+      res.id,
+      res.slotId,
+      res.userId,
+      res.date,
+      res.checkedIn,
+      res.checkInTime || undefined
+    );
+  }
+
+  public async updateReservation(reservation: Reservation): Promise<void> {
+    await this.prisma.reservation.update({
+      where: { id: reservation.id },
+      data: {
+        checkedIn: reservation.checkedIn,
+        checkInTime: reservation.checkInTime,
+      },
+    });
+  }
+
+  public async getUserReservations(userId: string): Promise<Reservation[]> {
+    const reservations = await this.prisma.reservation.findMany({
+      where: { userId },
+      orderBy: { date: 'desc' },
+    });
+
+    return reservations.map(
+      (res) =>
+        new Reservation(
+          res.id,
+          res.slotId,
+          res.userId,
+          res.date,
+          res.checkedIn,
+          res.checkInTime || undefined
+        )
+    );
+  }
+
+  public async findAllActiveReservations(date: Date): Promise<Reservation[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const reservations = await this.prisma.reservation.findMany({
+      where: {
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+    });
+
+    return reservations.map(
+      (res) =>
+        new Reservation(
+          res.id,
+          res.slotId,
+          res.userId,
+          res.date,
+          res.checkedIn,
+          res.checkInTime || undefined
+        )
+    );
+  }
+
+  public async hasActiveReservation(userId: string, date: Date): Promise<boolean> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const count = await this.prisma.reservation.count({
+      where: {
+        userId,
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+    });
+
+    return count > 0;
+  }
 }
