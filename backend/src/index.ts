@@ -37,7 +37,8 @@ const router = createExpressRouter(
   createReservation,
   checkInReservation,
   releaseExpiredReservations,
-  repository
+  repository,
+  prisma
 );
 app.use('/api', router);
 

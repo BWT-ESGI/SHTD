@@ -27,15 +27,32 @@ export class CreateReservation {
       throw new Error('Slot is not available.');
     }
 
+    const user = await this.userRepository.findById(userId);
+    if (!user) {
+      throw new Error('User not found.');
+    }
+
+    // New restriction: Electric vehicles only for 'F' slots
+    if (slot.type === 'F') {
+      if (!user.hasElectricVehicle) {
+        throw new Error('Electric slots (Type F) are reserved for electric vehicles only.');
+      }
+    }
+
     if (requiredType && slot.type !== requiredType) {
       throw new Error(`Slot is not of the required type: ${requiredType}.`);
     }
 
-    if (slot.type === 'F' || slot.type === 'A') {
-      const user = await this.userRepository.findById(userId);
-      if (!user || !user.hasElectricVehicle) {
-        throw new Error(`Electric slots are reserved for electric vehicles only.`);
-      }
+    // Time-based restrictions
+    const now = new Date();
+    if (date.getTime() < now.getTime() - 60000) {
+      throw new Error('Cannot reserve in the past');
+    }
+
+    const maxDate = new Date();
+    maxDate.setDate(now.getDate() + user.allowedReservationDays);
+    if (date.getTime() > maxDate.getTime()) {
+      throw new Error(`Cannot reserve more than ${user.allowedReservationDays} days in advance`);
     }
 
     const hasActive = await this.reservationRepository.hasActiveReservation(
@@ -52,7 +69,7 @@ export class CreateReservation {
     const reservation = new Reservation(
       this.generateId(),
       slot.id,
-      userId,
+      user.id,
       date
     );
 
@@ -63,7 +80,7 @@ export class CreateReservation {
     // Publish event
     await this.messageQueue.publish('ReservationCreated', {
       reservationId: reservation.id,
-      userId,
+      userId: user.id,
       slotId,
       date,
     });

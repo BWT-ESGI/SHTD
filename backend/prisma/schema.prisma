@@ -15,6 +15,12 @@ model ParkingSlot {
   Reservation Reservation[]
 }
 
+enum UserRole {
+  EMPLOYEE
+  SECRETARY
+  MANAGER
+}
+
 model Reservation {
   id          String      @id @default(uuid())
   slotId      String
@@ -23,9 +29,13 @@ model Reservation {
   checkedIn   Boolean     @default(false)
   checkInTime DateTime?
   slot        ParkingSlot @relation(fields: [slotId], references: [id])
+  user        User        @relation(fields: [userId], references: [id])
 }
 
 model User {
-  id                  String  @id
-  hasElectricVehicle  Boolean @default(false)
+  id                  String        @id
+  email               String        @unique
+  role                UserRole      @default(EMPLOYEE)
+  hasElectricVehicle  Boolean       @default(false)
+  Reservation         Reservation[]
 }
