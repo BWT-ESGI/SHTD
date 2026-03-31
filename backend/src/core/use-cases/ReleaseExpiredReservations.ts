@@ -19,7 +19,9 @@ export class ReleaseExpiredReservations {
         slot.makeAvailable();
         await this.reservationRepository.updateSlot(slot);
       }
-      // For iteration 3, we simply make symbols available again.
+      // NEW: Fix the bug by removing the reservation record from the user's active list
+      await this.reservationRepository.deleteReservation(res.id);
+      
       console.log(`[Release] Expired reservation ${res.id} released slot ${res.slotId}`);
     }
   }

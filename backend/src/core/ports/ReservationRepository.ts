@@ -12,4 +12,6 @@ export interface ReservationRepository {
   getUserReservations(userId: string): Promise<Reservation[]>;
   findAllActiveReservations(date: Date): Promise<Reservation[]>;
   hasActiveReservation(userId: string, date: Date): Promise<boolean>;
+  deleteReservation(id: string): Promise<void>;
+  getSlotsWithStatus(date: Date): Promise<any[]>;
 }

@@ -15,7 +15,7 @@ export function createExpressRouter(
   router.get('/slots', async (req: Request, res: Response) => {
     try {
       const today = new Date();
-      const slots = await reservationRepository.findAvailableSlots(today);
+      const slots = await reservationRepository.getSlotsWithStatus(today);
       res.json(slots);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

@@ -141,4 +141,37 @@ export class PrismaReservationRepository implements ReservationRepository {
 
     return count > 0;
   }
+
+  public async deleteReservation(id: string): Promise<void> {
+    await this.prisma.reservation.delete({
+      where: { id },
+    });
+  }
+
+  public async getSlotsWithStatus(date: Date): Promise<any[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const slots = await this.prisma.parkingSlot.findMany();
+    const reservations = await this.prisma.reservation.findMany({
+      where: {
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+    });
+
+    return slots.map((slot) => {
+      const reservation = reservations.find((r) => r.slotId === slot.id);
+      return {
+        id: slot.id,
+        type: slot.type,
+        isAvailable: slot.isAvailable,
+        checkedIn: reservation ? reservation.checkedIn : false,
+      };
+    });
+  }
 }

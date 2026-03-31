@@ -5,6 +5,7 @@ interface ParkingSlot {
   id: string;
   type: string;
   isAvailable: boolean;
+  checkedIn: boolean;
 }
 
 const ROWS = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -185,11 +186,11 @@ function App() {
 
         <div className="status-overview">
           <div className="status-item">
-            <span className="count">{availableSlots.length}</span>
+            <span className="count">{availableSlots.filter(s => s.isAvailable).length}</span>
             <span className="label">Available Spaces</span>
           </div>
           <div className="status-item">
-            <span className="count occupied">{60 - availableSlots.length}</span>
+            <span className="count occupied">{availableSlots.filter(s => !s.isAvailable).length}</span>
             <span className="label">Occupied</span>
           </div>
         </div>
@@ -237,8 +238,8 @@ function App() {
                     return (
                       <div
                         key={slotID}
-                        className={`parking-space ${slotData ? 'empty' : 'filled'} ${isEV ? 'ev-zone' : ''}`}
-                        onClick={() => slotData && handleReserve(slotID, slotData.type)}
+                        className={`parking-space ${slotData?.isAvailable ? 'empty' : 'filled'} ${isEV ? 'ev-zone' : ''} ${slotData?.checkedIn ? 'checked-in' : ''}`}
+                        onClick={() => slotData?.isAvailable && handleReserve(slotID, slotData.type)}
                       >
                         <div className="space-markings">
                           <div className="side-line left"></div>
@@ -254,8 +255,13 @@ function App() {
 
                         {reservingId === slotID ? (
                           <div className="spot-loader"></div>
-                        ) : !slotData ? (
-                          <TopDownCar color={rowIndex % 2 === 0 ? '#1e293b' : '#334155'} />
+                        ) : !slotData?.isAvailable ? (
+                          <>
+                            <TopDownCar color={rowIndex % 2 === 0 ? '#1e293b' : '#334155'} />
+                            {slotData?.checkedIn && (
+                              <div className="checkin-status">CHECKED-IN</div>
+                            )}
+                          </>
                         ) : (
                           <div className="reserve-prompt">RESERVE</div>
                         )}
