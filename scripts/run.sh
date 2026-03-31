@@ -16,22 +16,22 @@ docker exec parking_backend node -e "
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 prisma.user.upsert({
-  where: { id: 'employee123' },
-  update: { hasElectricVehicle: false },
-  create: { id: 'employee123', hasElectricVehicle: false }
-}).then(() => console.log('User employee123 (Standard) seeded')).catch(console.error);
+  where: { email: 'admin@company.com' },
+  update: {},
+  create: { id: 'sec-1', email: 'admin@company.com', role: 'SECRETARY', hasElectricVehicle: false }
+}).then(() => console.log('User admin@company.com (SECRETARY) seeded')).catch(console.error);
 
 prisma.user.upsert({
-  where: { id: 'employee456' },
-  update: { hasElectricVehicle: false },
-  create: { id: 'employee456', hasElectricVehicle: false }
-}).then(() => console.log('User employee456 (Standard) seeded')).catch(console.error);
+  where: { email: 'boss@company.com' },
+  update: {},
+  create: { id: 'man-1', email: 'boss@company.com', role: 'MANAGER', hasElectricVehicle: false }
+}).then(() => console.log('User boss@company.com (MANAGER) seeded')).catch(console.error);
 
 prisma.user.upsert({
-  where: { id: 'employee789' },
-  update: { hasElectricVehicle: true },
-  create: { id: 'employee789', hasElectricVehicle: true }
-}).then(() => console.log('User employee789 (Electric) seeded')).catch(console.error);
+  where: { email: 'user@company.com' },
+  update: {},
+  create: { id: 'emp-1', email: 'user@company.com', role: 'EMPLOYEE', hasElectricVehicle: true }
+}).then(() => console.log('User user@company.com (EMPLOYEE EV) seeded')).catch(console.error);
 "
 
 docker exec parking_backend node -e "

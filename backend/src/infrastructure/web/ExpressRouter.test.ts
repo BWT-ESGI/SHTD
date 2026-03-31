@@ -27,7 +27,7 @@ describe('Integration Test: API -> Use Case -> DB', () => {
     
     app = express();
     app.use(express.json());
-    app.use('/api', createExpressRouter(createReservation, checkInReservation, releaseExpiredReservations, repository));
+    app.use('/api', createExpressRouter(createReservation, checkInReservation, releaseExpiredReservations, repository, prisma));
   });
 
   afterAll(async () => {

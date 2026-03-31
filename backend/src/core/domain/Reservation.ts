@@ -12,4 +12,9 @@ export class Reservation {
     this.checkedIn = true;
     this.checkInTime = new Date();
   }
+
+  public updateDate(newDate: Date): void {
+    // We could add domain rules here later (e.g. check if past)
+    (this as any).date = newDate;
+  }
 }

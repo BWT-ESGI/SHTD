@@ -34,183 +34,200 @@ body {
 }
 
 /* Control Panel */
-.control-panel {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 40px;
-  /* max-width: 1200px; */
-  /* margin-left: auto; */
-  /* margin-right: auto; */
-  gap: 20px;
-  z-index: 999;
-  position: sticky;
-  top: 0px;
-  background: #1a1c23;
-  padding: 20px 0;
-  border-bottom: 1px solid green;
-}
-
-.user-simulator {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.user-simulator label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  font-weight: 700;
-}
-
-.user-simulator select {
-  background: #000;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.my-current-reservation {
-  flex: 1;
-  background: rgba(16, 185, 129, 0.05);
-  padding: 15px;
-  border-radius: 12px;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.my-current-reservation h3 {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--success);
-  letter-spacing: 0.1em;
-}
-
-.reservation-card {
+.control-panel.premium-glass {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 10px 15px;
-  border-radius: 8px;
-}
-
-.res-details {
-  font-size: 0.9rem;
-}
-
-.status-badge {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-
-.status-badge.success {
-  background: var(--success);
-  color: #000;
-}
-
-.btn-checkin {
-  background: var(--text-bright);
-  color: #000;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.btn-checkin:hover {
-  transform: scale(1.05);
-  background: var(--success);
-}
-
-.btn-debug {
-  background: #f59e0b;
-  color: #000;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 0.75rem;
-  cursor: pointer;
-  margin-top: 5px;
-  transition: all 0.2s;
-}
-
-.btn-debug:hover {
-  background: #fbbf24;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
-}
-
-.checkin-status {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #fbbf24;
-  color: #000;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 0.65rem;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  z-index: 10;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+  margin: 0 auto 40px auto;
+  gap: 24px;
+  z-index: 999;
+  position: sticky;
+  top: 20px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 16px 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .status-overview {
   display: flex;
-  gap: 30px;
+  gap: 16px;
 }
 
-.status-item {
+.premium-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.premium-card:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.status-icon.success-glow {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+.status-icon.danger-glow {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.status-data {
   display: flex;
   flex-direction: column;
 }
 
 .count {
-  font-size: 2rem;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--success);
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #f8fafc;
 }
 
 .count.occupied {
-  color: #ef4444;
+  color: #f8fafc;
 }
 
 .label {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--text-dim);
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.premium-reservation {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.02));
+  padding: 12px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  flex: 1;
+}
+
+.premium-reservation h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: #34d399;
+  font-weight: 800;
+}
+
+.reservation-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.res-info {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.res-spot-label {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.res-spot-id {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.premium-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.success.premium-badge {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.premium-btn {
+  background: #ffffff;
+  color: #0f172a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-btn:hover {
+  transform: translateY(-2px);
+  background: #34d399;
+  color: white;
+  box-shadow: 0 10px 20px -10px #34d399;
+}
+
+.premium-btn-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(to bottom, #f59e0b, #d97706);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+.premium-btn-warning:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+}
+
+.admin-actions {
+  display: flex;
+  align-items: center;
 }
 
 /* Main Floor */
@@ -506,36 +523,49 @@ body {
   transform: translateY(0);
 }
 
-.status-toast {
-  padding: 10px 25px;
-  border-radius: 12px;
-  font-weight: 700;
-  animation: slide-in 0.3s ease;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Feedback Toasts */
+.status-toast.premium-toast {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: toast-slide-down 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1000;
+  color: #ffffff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.status-toast.success {
-  background: rgba(16, 185, 129, 0.2);
-  color: var(--success);
+.status-toast.premium-toast.success {
+  background: rgba(16, 185, 129, 0.85);
+  border: 1px solid rgba(16, 185, 129, 0.4);
 }
 
-.status-toast.error {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
+.status-toast.premium-toast.error {
+  background: rgba(239, 68, 68, 0.85);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-@keyframes slide-in {
+@keyframes toast-slide-down {
   from {
-    transform: translateY(-20px);
+    transform: translateX(-50%) translateY(-100px);
     opacity: 0;
   }
-
   to {
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0);
     opacity: 1;
   }
 }
+
 
 /* Loaders */
 .overlay-loading {
