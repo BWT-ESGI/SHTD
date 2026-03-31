@@ -42,6 +42,7 @@ describe('CreateReservation Use Case', () => {
   it('should create a reservation successfully', async () => {
     const slot = new ParkingSlot('slot-1', 'A', true);
     mockRepository.findById.mockResolvedValue(slot);
+    mockUserRepository.findById.mockResolvedValue(new User('user-1', 'test@test.com', UserRole.EMPLOYEE, false));
     (mockRepository.hasActiveReservation as jest.Mock).mockResolvedValue(false);
 
     const reservation = await useCase.execute('slot-1', 'user-1', new Date(), 'A');
@@ -70,6 +71,7 @@ describe('CreateReservation Use Case', () => {
   it('should fail if slot is wrong type', async () => {
     const slot = new ParkingSlot('slot-1', 'F', true);
     mockRepository.findById.mockResolvedValue(slot);
+    mockUserRepository.findById.mockResolvedValue(new User('user-1', 'test@test.com', UserRole.EMPLOYEE, true));
 
     await expect(useCase.execute('slot-1', 'user-1', new Date(), 'A')).rejects.toThrow('Slot is not of the required type: A.');
   });

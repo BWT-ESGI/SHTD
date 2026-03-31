@@ -11,6 +11,14 @@ import { createExpressRouter } from './ExpressRouter';
 
 // To keep the test simple without requiring a real external Redis:
 jest.mock('bullmq');
+jest.mock('./authMiddleware', () => ({
+  authenticateToken: (req: any, res: any, next: any) => {
+    req.user = { id: 'test-user', email: 'test@test.com', role: 'EMPLOYEE' };
+    next();
+  },
+  checkRole: () => (req: any, res: any, next: any) => next(),
+  JWT_SECRET: 'super-secret-key-for-dev'
+}));
 
 describe('Integration Test: API -> Use Case -> DB', () => {
   let app: express.Express;
