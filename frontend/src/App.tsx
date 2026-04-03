@@ -1,44 +1,75 @@
-import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import ParkingLot from './components/ParkingLot';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
-import { LogOut, Home, Users } from 'lucide-react';
+import ManagerDashboard from './components/ManagerDashboard';
+import ReservationHistory from './components/ReservationHistory';
+import { LogOut, Home, Users, BarChart3, History, MapPin } from 'lucide-react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
+  const navLinkClass = (path: string) => 
+    `tab-btn ${location.pathname === path ? 'active' : ''}`;
+
   return (
-    <div className="min-h-screen" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: '#0f172a', color: '#f8fafc' }}>
+    <div className="min-h-screen parking-lot-view" style={{ display: 'flex', flexDirection: 'column', height: '100vh', padding: 0 }}>
       {user && (
-        <nav style={{ display: 'flex', gap: '1rem', padding: '1rem 2rem', backgroundColor: '#1e293b', color: 'white', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <b style={{ marginRight: '2rem' }}>Parking System</b>
-          
-          <Link to="/" style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-            <Home size={18} /> Home (Parking)
-          </Link>
+        <nav className="main-nav premium-glass">
+          <div className="nav-container">
+            <div className="nav-brand">
+              <div className="brand-icon">
+                <MapPin size={18} />
+              </div>
+              <span className="brand-text">Parking</span>
+            </div>
 
-          {(user.role === 'MANAGER' || user.role === 'SECRETARY') && (
-            <>
-              <Link to="/admin" style={{ color: '#60a5fa', display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none' }}>
-                <Users size={18} /> Admin Users
+            <div className="nav-links">
+              <Link to="/" className={navLinkClass('/')}>
+                <Home size={16} /> <span className="link-text">Home</span>
               </Link>
-            </>
-          )}
+              
+              {(user.role === 'MANAGER' || user.role === 'SECRETARY') && (
+                <>
+                  <Link to="/admin" className={navLinkClass('/admin')}>
+                    <Users size={16} /> <span className="link-text">Admin</span>
+                  </Link>
+                  <Link to="/history" className={navLinkClass('/history')}>
+                    <History size={16} /> <span className="link-text">History</span>
+                  </Link>
+                </>
+              )}
 
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ fontSize: '0.9rem', color: '#cbd5e1' }}>{user.email} ({user.role})</span>
-            <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#dc2626', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer' }}>
-              <LogOut size={16} /> Logout
-            </button>
+              {user.role === 'MANAGER' && (
+                <Link to="/dashboard" className={navLinkClass('/dashboard')}>
+                  <BarChart3 size={16} /> <span className="link-text">Stats</span>
+                </Link>
+              )}
+            </div>
+
+            <div className="nav-divider"></div>
+
+            <div className="nav-user">
+              <div className="user-info">
+                <span className="user-label">Identity</span>
+                <span className="user-email">{user.email}</span>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="premium-btn logout-btn"
+              >
+                <LogOut size={14} /> <span className="link-text">Logout</span>
+              </button>
+            </div>
           </div>
         </nav>
       )}
@@ -63,6 +94,11 @@ function App() {
         {/* Protected Routes - Admin Area */}
         <Route element={<ProtectedRoute allowedRoles={['MANAGER', 'SECRETARY']} />}>
            <Route path="/admin" element={<AdminDashboard />} />
+           <Route path="/history" element={<ReservationHistory />} />
+        </Route>
+
+        <Route element={<ProtectedRoute allowedRoles={['MANAGER']} />}>
+           <Route path="/dashboard" element={<ManagerDashboard />} />
         </Route>
 
         <Route path="/unauthorized" element={<div style={{ padding: '2rem', textAlign: 'center', color: '#f8fafc' }}><h2>403 - Unauthorized</h2><p>You don't have permission to view this page.</p></div>} />
@@ -72,5 +108,4 @@ function App() {
   );
 }
 
-import { Navigate } from 'react-router-dom';
 export default App;

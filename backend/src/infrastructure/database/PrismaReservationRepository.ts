@@ -36,6 +36,7 @@ export class PrismaReservationRepository implements ReservationRepository {
         slotId: reservation.slotId,
         userId: reservation.userId,
         date: reservation.date,
+        isActive: reservation.isActive,
       },
     });
   }
@@ -62,7 +63,8 @@ export class PrismaReservationRepository implements ReservationRepository {
       res.userId,
       res.date,
       res.checkedIn,
-      res.checkInTime || undefined
+      res.checkInTime || undefined,
+      res.isActive
     );
   }
 
@@ -90,7 +92,8 @@ export class PrismaReservationRepository implements ReservationRepository {
           res.userId,
           res.date,
           res.checkedIn,
-          res.checkInTime || undefined
+          res.checkInTime || undefined,
+          res.isActive
         )
     );
   }
@@ -173,5 +176,31 @@ export class PrismaReservationRepository implements ReservationRepository {
         checkedIn: reservation ? reservation.checkedIn : false,
       };
     });
+  }
+
+  public async findAllReservations(): Promise<Reservation[]> {
+    const reservations = await this.prisma.reservation.findMany({
+      orderBy: { date: 'desc' },
+    });
+
+    return reservations.map(
+      (res) =>
+        new Reservation(
+          res.id,
+          res.slotId,
+          res.userId,
+          res.date,
+          res.checkedIn,
+          res.checkInTime || undefined,
+          res.isActive
+        )
+    );
+  }
+
+  public async getAllSlots(): Promise<ParkingSlot[]> {
+    const slots = await this.prisma.parkingSlot.findMany();
+    return slots.map(
+      (s) => new ParkingSlot(s.id, s.type as SlotType, s.isAvailable)
+    );
   }
 }

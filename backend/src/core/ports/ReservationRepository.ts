@@ -11,7 +11,9 @@ export interface ReservationRepository {
   updateReservation(reservation: Reservation): Promise<void>;
   getUserReservations(userId: string): Promise<Reservation[]>;
   findAllActiveReservations(date: Date): Promise<Reservation[]>;
+  findAllReservations(): Promise<Reservation[]>; // For history
   hasActiveReservation(userId: string, date: Date): Promise<boolean>;
   deleteReservation(id: string): Promise<void>;
   getSlotsWithStatus(date: Date): Promise<any[]>;
+  getAllSlots(): Promise<ParkingSlot[]>;
 }

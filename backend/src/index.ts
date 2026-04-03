@@ -11,6 +11,9 @@ import cron from 'node-cron';
 
 import { PrismaUserRepository } from './infrastructure/database/PrismaUserRepository';
 import { User } from './core/domain/User';
+import { GetParkingStats } from './core/use-cases/GetParkingStats';
+import { GetReservationHistory } from './core/use-cases/GetReservationHistory';
+import { AdminUpdateReservation } from './core/use-cases/AdminUpdateReservation';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +34,9 @@ const messageQueue = new BullMessageQueue('reservations', REDIS_URL);
 const createReservation = new CreateReservation(repository, userRepository, messageQueue);
 const checkInReservation = new CheckInReservation(repository);
 const releaseExpiredReservations = new ReleaseExpiredReservations(repository);
+const getParkingStats = new GetParkingStats(repository);
+const getReservationHistory = new GetReservationHistory(repository);
+const adminUpdateReservation = new AdminUpdateReservation(repository);
 
 // Initialize web adapter
 const router = createExpressRouter(
@@ -38,7 +44,10 @@ const router = createExpressRouter(
   checkInReservation,
   releaseExpiredReservations,
   repository,
-  prisma
+  prisma,
+  getParkingStats,
+  getReservationHistory,
+  adminUpdateReservation
 );
 app.use('/api', router);
 

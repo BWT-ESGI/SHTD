@@ -8,6 +8,9 @@ import { CreateReservation } from '../../core/use-cases/CreateReservation';
 import { CheckInReservation } from '../../core/use-cases/CheckInReservation';
 import { ReleaseExpiredReservations } from '../../core/use-cases/ReleaseExpiredReservations';
 import { createExpressRouter } from './ExpressRouter';
+import { GetParkingStats } from '../../core/use-cases/GetParkingStats';
+import { GetReservationHistory } from '../../core/use-cases/GetReservationHistory';
+import { AdminUpdateReservation } from '../../core/use-cases/AdminUpdateReservation';
 
 // To keep the test simple without requiring a real external Redis:
 jest.mock('bullmq');
@@ -32,10 +35,22 @@ describe('Integration Test: API -> Use Case -> DB', () => {
     const createReservation = new CreateReservation(repository, userRepository, messageQueue);
     const checkInReservation = new CheckInReservation(repository);
     const releaseExpiredReservations = new ReleaseExpiredReservations(repository);
+    const getParkingStats = new GetParkingStats(repository);
+    const getReservationHistory = new GetReservationHistory(repository);
+    const adminUpdateReservation = new AdminUpdateReservation(repository);
     
     app = express();
     app.use(express.json());
-    app.use('/api', createExpressRouter(createReservation, checkInReservation, releaseExpiredReservations, repository, prisma));
+    app.use('/api', createExpressRouter(
+      createReservation, 
+      checkInReservation, 
+      releaseExpiredReservations, 
+      repository, 
+      prisma,
+      getParkingStats,
+      getReservationHistory,
+      adminUpdateReservation
+    ));
   });
 
   afterAll(async () => {

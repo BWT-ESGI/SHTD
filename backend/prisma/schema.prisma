@@ -28,6 +28,7 @@ model Reservation {
   date        DateTime
   checkedIn   Boolean     @default(false)
   checkInTime DateTime?
+  isActive    Boolean     @default(true)
   slot        ParkingSlot @relation(fields: [slotId], references: [id])
   user        User        @relation(fields: [userId], references: [id])
 }

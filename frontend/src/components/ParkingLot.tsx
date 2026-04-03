@@ -198,7 +198,7 @@ function ParkingLot() {
       )}
 
       <header className="control-panel premium-glass">
-        
+
         <div className="status-overview">
           <div className="status-item premium-card">
             <div className="status-icon success-glow"><Car size={24} /></div>
@@ -226,7 +226,7 @@ function ParkingLot() {
                   <span className="res-spot-id">{res.slotId}</span>
                 </div>
                 {res.checkedIn ? (
-                  <div className="status-badge success premium-badge"><CheckCircle size={14}/> Checked-in</div>
+                  <div className="status-badge success premium-badge"><CheckCircle size={14} /> Checked-in</div>
                 ) : (
                   <button onClick={() => handleCheckIn(res.id)} className="btn-checkin premium-btn">Check-in</button>
                 )}
